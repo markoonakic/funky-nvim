@@ -43,3 +43,43 @@ vim.opt.fillchars = { eob = " " }
 
 vim.opt.shortmess:append("sI") -- Disable intro message and search count
 vim.opt.laststatus = 3
+
+-- Diagnostics
+vim.diagnostic.config({
+	virtual_text = {
+		current_line = true,
+		spacing = 4,
+		prefix = "",
+		format = function(diagnostic)
+			local icons = {
+				[vim.diagnostic.severity.ERROR] = "",
+				[vim.diagnostic.severity.WARN] = "",
+				[vim.diagnostic.severity.HINT] = " ",
+				[vim.diagnostic.severity.INFO] = " ",
+			}
+
+			return string.format("%s %s", icons[diagnostic.severity] or "", diagnostic.message)
+		end,
+	},
+
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = "",
+			[vim.diagnostic.severity.WARN] = "",
+			[vim.diagnostic.severity.HINT] = " ",
+			[vim.diagnostic.severity.INFO] = " ",
+		},
+	},
+
+	underline = true,
+	severity_sort = true,
+	update_in_insert = false,
+
+	float = {
+		focusable = true,
+		style = "minimal",
+		border = "rounded",
+		header = "",
+		prefix = "",
+	},
+})

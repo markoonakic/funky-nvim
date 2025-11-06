@@ -1,69 +1,70 @@
-return {
-	"yetone/avante.nvim",
-	event = "VeryLazy",
-	lazy = false,
-	version = false,
-	opts = {
-		provider = "gemini", -- Default provider
-		providers = {
-			copilot = {
-				endpoint = "https://api.githubcopilot.com",
-				model = "gpt-4o-2024-05-13",
-				api_key_name = "AVANTE_COPILOT_API_KEY",
-				timeout = 120000,
-			},
-			gemini = {
-				__inherited_from = "gemini", -- FIX: Use built-in Gemini provider
-				model = "gemini-2.5-pro",
-				api_key_name = "AVANTE_GEMINI_API_KEY",
-				timeout = 120000,
-				-- Removed custom parsing functions that were causing the 400 error
-			},
-			openrouter = {
-				__inherited_from = "openai",
-				endpoint = "https://openrouter.ai/api/v1",
-				api_key_name = "OPENROUTER_API_KEY",
-				model = "qwen/qwen3-coder:free", -- RESTORED: Back to Qwen3-Coder
-				timeout = 120000,
-				max_tokens = 65536,
-			},
-		},
-		web_search_engine = {
-			provider = "tavily",
-			proxy = nil,
-		},
-		behaviour = {
-			auto_suggestions = false,
-			auto_set_highlight_group = true,
-			auto_set_keymaps = true,
-			auto_apply_diff_after_generation = false,
-			support_paste_from_clipboard = false,
-		},
-	},
-	build = "make",
-	dependencies = {
-		"stevearc/dressing.nvim",
-		"nvim-lua/plenary.nvim",
-		"nvim-tree/nvim-web-devicons",
-		"MunifTanjim/nui.nvim",
-		"zbirenbaum/copilot.lua",
-		{
-			"HakonHarnes/img-clip.nvim",
-			event = "VeryLazy",
-			opts = {
-				default = {
-					embed_image_as_base64 = false,
-					prompt_for_file_name = false,
-					drag_and_drop = { insert_mode = true },
-					use_absolute_path = true,
-					show_notification = false,
-				},
-			},
-		},
-		{
-			"MeanderingProgrammer/render-markdown.nvim",
-			opts = { file_types = { "markdown", "Avante" } },
-			ft = { "markdown", "Avante" },
-		},
-	},
-}
+-- return {
+-- 	"yetone/avante.nvim",
+-- 	event = "VeryLazy",
+-- 	lazy = true,
+-- 	version = false,
+-- 	opts = {
+-- 		provider = "gemini", -- Default provider
+-- 		providers = {
+-- 			copilot = {
+-- 				endpoint = "https://api.githubcopilot.com",
+-- 				model = "gpt-4o-2024-05-13",
+-- 				api_key_name = "AVANTE_COPILOT_API_KEY",
+-- 				timeout = 120000,
+-- 			},
+-- 			gemini = {
+-- 				__inherited_from = "gemini", -- FIX: Use built-in Gemini provider
+-- 				model = "gemini-2.5-pro",
+-- 				api_key_name = "AVANTE_GEMINI_API_KEY",
+-- 				timeout = 120000,
+-- 				-- Removed custom parsing functions that were causing the 400 error
+-- 			},
+-- 			openrouter = {
+-- 				__inherited_from = "openai",
+-- 				endpoint = "https://openrouter.ai/api/v1",
+-- 				api_key_name = "OPENROUTER_API_KEY",
+-- 				model = "qwen/qwen3-coder:free", -- RESTORED: Back to Qwen3-Coder
+-- 				timeout = 120000,
+-- 				max_tokens = 65536,
+-- 			},
+-- 		},
+-- 		web_search_engine = {
+-- 			provider = "tavily",
+-- 			proxy = nil,
+-- 		},
+-- 		behaviour = {
+-- 			auto_suggestions = false,
+-- 			auto_set_highlight_group = true,
+-- 			auto_set_keymaps = true,
+-- 			auto_apply_diff_after_generation = false,
+-- 			support_paste_from_clipboard = false,
+-- 		},
+-- 	},
+-- 	build = "make",
+-- 	dependencies = {
+-- 		"stevearc/dressing.nvim",
+-- 		"nvim-lua/plenary.nvim",
+-- 		"nvim-tree/nvim-web-devicons",
+-- 		"MunifTanjim/nui.nvim",
+-- 		"zbirenbaum/copilot.lua",
+-- 		{
+-- 			"HakonHarnes/img-clip.nvim",
+-- 			event = "VeryLazy",
+-- 			opts = {
+-- 				default = {
+-- 					embed_image_as_base64 = false,
+-- 					prompt_for_file_name = false,
+-- 					drag_and_drop = { insert_mode = true },
+-- 					use_absolute_path = true,
+-- 					show_notification = false,
+-- 				},
+-- 			},
+-- 		},
+-- 		{
+-- 			"MeanderingProgrammer/render-markdown.nvim",
+-- 			opts = { file_types = { "markdown", "Avante" } },
+-- 			ft = { "markdown", "Avante" },
+-- 		},
+-- 	},
+-- }
+return {}

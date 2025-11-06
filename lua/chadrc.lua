@@ -9,6 +9,11 @@ return {
 			NvDashPluginStats = {
 				fg = "#fb4934",
 			},
+
+			DiagnosticSignWarn = { link = "DiagnosticWarn" },
+			DiagnosticSignError = { link = "DiagnosticError" },
+			DiagnosticSignInfo = { link = "DiagnosticInfo" },
+			DiagnosticSignHint = { link = "DiagnosticHint" },
 		},
 		hl_override = {
 
