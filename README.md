@@ -1,1 +1,1 @@
-# Funky-nvim
+# My Neovim dotfiles
