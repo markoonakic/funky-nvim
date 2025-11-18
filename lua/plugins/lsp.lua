@@ -35,11 +35,11 @@ return {
 					"emmet_language_server",
 					"vtsls",
 					"taplo",
+					"ltex",
 				},
 				automatic_enable = true,
 			})
 
-			-- tools (formatters/linters/debuggers)
 			require("mason-tool-installer").setup({
 				ensure_installed = {
 					"prettierd",
@@ -74,7 +74,6 @@ return {
 			{ "hrsh7th/cmp-nvim-lsp", enabled = false },
 		},
 		config = function()
-			-- shared capabilities (cmp-aware if available)
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
 			local ok_cmp, cmp = pcall(require, "cmp_nvim_lsp")
 			if ok_cmp then
@@ -208,6 +207,26 @@ return {
 				capabilities = capabilities,
 			})
 
+			cfg("marksman", {
+				filetypes = { "markdown" },
+				capabilities = capabilities,
+			})
+
+			cfg("ltex", {
+				filetypes = { "markdown" },
+				on_attach = function(client, bufnr)
+					client.server_capabilities.documentFormattingProvider = false
+					client.server_capabilities.semanticTokensProvider = nil
+				end,
+				settings = {
+					ltex = {
+						language = "en-US",
+						additionalRules = { motherTongue = "en" },
+					},
+				},
+				capabilities = capabilities,
+			})
+
 			vim.lsp.enable({
 				"lua_ls",
 				"html",
@@ -223,6 +242,8 @@ return {
 				"emmet_language_server",
 				"vtsls",
 				"taplo",
+				"marksman",
+				"ltex",
 			})
 		end,
 	},
