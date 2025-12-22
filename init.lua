@@ -20,3 +20,6 @@ if vim.fn.isdirectory(cache) == 1 then
 		dofile(cache .. "/" .. v)
 	end
 end
+
+-- Load ASCII dashboard animation
+require("ascii_animation")

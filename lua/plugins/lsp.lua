@@ -18,46 +18,119 @@ return {
 				},
 			})
 
-			-- mason-lspconfig v2
-			require("mason-lspconfig").setup({
-				ensure_installed = {
-					"lua_ls",
+			-- Base LSPs that work without external runtimes
+			local ensure_installed = {
+				"lua_ls",
+				"rust_analyzer",
+				"taplo",
+			}
+
+			local lsp_enable_list = {
+				"lua_ls",
+				"rust_analyzer",
+				"taplo",
+				"marksman",
+			}
+
+			-- Conditionally add LSPs based on available runtimes
+			if vim.fn.executable("npm") == 1 then
+				vim.list_extend(ensure_installed, {
 					"html",
 					"cssls",
-					"clangd",
-					"ruff",
-					"rust_analyzer",
-					"cmake",
 					"tailwindcss",
-					"gopls",
 					"bashls",
 					"jsonls",
 					"emmet_language_server",
 					"vtsls",
-					"taplo",
-					"ltex",
-				},
-				automatic_enable = true,
+				})
+				vim.list_extend(lsp_enable_list, {
+					"html",
+					"cssls",
+					"tailwindcss",
+					"bashls",
+					"jsonls",
+					"emmet_language_server",
+					"vtsls",
+				})
+			end
+
+			if vim.fn.executable("python3") == 1 then
+				vim.list_extend(ensure_installed, { "ruff" })
+				vim.list_extend(lsp_enable_list, { "ruff" })
+			end
+
+			if vim.fn.executable("go") == 1 then
+				vim.list_extend(ensure_installed, { "gopls" })
+				vim.list_extend(lsp_enable_list, { "gopls" })
+			end
+
+			if vim.fn.executable("clang") == 1 or vim.fn.executable("gcc") == 1 then
+				vim.list_extend(ensure_installed, { "clangd" })
+				vim.list_extend(lsp_enable_list, { "clangd" })
+			end
+
+			if vim.fn.executable("cmake") == 1 then
+				vim.list_extend(ensure_installed, { "cmake" })
+				vim.list_extend(lsp_enable_list, { "cmake" })
+			end
+
+			-- Always include ltex for markdown spellchecking (Java-based, usually available)
+			vim.list_extend(ensure_installed, { "ltex" })
+			vim.list_extend(lsp_enable_list, { "ltex" })
+
+			-- mason-lspconfig v2
+			require("mason-lspconfig").setup({
+				ensure_installed = ensure_installed,
+				automatic_installation = false,
 			})
 
-			require("mason-tool-installer").setup({
-				ensure_installed = {
+			-- Conditional tool installer
+			local tools_installed = {}
+
+			if vim.fn.executable("npm") == 1 then
+				vim.list_extend(tools_installed, {
 					"prettierd",
 					"prettier",
-					"stylua",
+					"eslint_d",
+				})
+			end
+
+			if vim.fn.executable("python3") == 1 then
+				vim.list_extend(tools_installed, {
 					"isort",
 					"black",
 					"autopep8",
 					"pylint",
-					"eslint_d",
-					"clang-format",
+				})
+			end
+
+			if vim.fn.executable("go") == 1 then
+				vim.list_extend(tools_installed, {
 					"gofumpt",
 					"goimports-reviser",
 					"delve",
 					"golines",
-					"shfmt",
-				},
+				})
+			end
+
+			if vim.fn.executable("clang-format") == 1 then
+				vim.list_extend(tools_installed, { "clang-format" })
+			end
+
+			if vim.fn.executable("lua") == 1 then
+				vim.list_extend(tools_installed, { "stylua" })
+			end
+
+			if vim.fn.executable("bash") == 1 then
+				vim.list_extend(tools_installed, { "shfmt" })
+			end
+
+			require("mason-tool-installer").setup({
+				ensure_installed = tools_installed,
 			})
+
+			-- Store the LSP enable list globally for use in the lspconfig section
+			_G.conditional_lsp_list = lsp_enable_list
 		end,
 		build = ":MasonUpdate",
 		keys = {
@@ -227,23 +300,12 @@ return {
 				capabilities = capabilities,
 			})
 
-			vim.lsp.enable({
+			-- Enable only the LSPs that have their runtimes available
+			vim.lsp.enable(_G.conditional_lsp_list or {
 				"lua_ls",
-				"html",
-				"cssls",
-				"clangd",
-				"ruff",
 				"rust_analyzer",
-				"cmake",
-				"tailwindcss",
-				"gopls",
-				"bashls",
-				"jsonls",
-				"emmet_language_server",
-				"vtsls",
 				"taplo",
 				"marksman",
-				"ltex",
 			})
 		end,
 	},
