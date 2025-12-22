@@ -33,22 +33,28 @@ return {
 				automatic_installation = false, -- No spam/errors
 			})
 
-			-- mason-tool-installer: Self-contained formatters + DAP + utils
+			-- mason-tool-installer: CONDITIONAL installations
+			local tools = {
+				-- Formatters: Self-contained or lightweight
+				"stylua",
+				"shfmt",
+			}
+
+			-- Prettier if npm available (for JS/TS/YAML)
+			if vim.fn.executable("npm") == 1 then
+				table.insert(tools, "prettierd")
+				table.insert(tools, "prettier")
+			end
+
+			-- Go-related tools if Go available (for debugging/AI)
+			if vim.fn.executable("go") == 1 then
+				table.insert(tools, "codelldb")
+				table.insert(tools, "lemonade")
+				table.insert(tools, "llm-ls")
+			end
+
 			require("mason-tool-installer").setup({
-				ensure_installed = {
-					-- Formatters: Self-contained or lightweight
-					"stylua",
-					"shfmt",
-					"prettierd",
-					"prettier",
-
-					-- DAP: Self-contained debuggers
-					"codelldb",
-
-					-- Utilities: Always useful
-					"lemonade",
-					"llm-ls",
-				},
+				ensure_installed = tools,
 			})
 		end,
 		build = ":MasonUpdate",
@@ -220,21 +226,13 @@ return {
 				capabilities = capabilities,
 			})
 
-			-- Enable ALL LSPs (gracefully fail if binary missing)
-			vim.lsp.enable({
-				"lua_ls",
-				"luau_lsp",
-				"rust_analyzer",
-				"taplo",
-				"marksman",
-				"ltex",
-				"yamlls",
-				"html",
-				"cssls",
-				"clangd",
-				"gopls",
-				"vtsls",
-				"emmet_language_server",
+			-- Use mason-lspconfig to setup Mason-installed LSPs
+			require("mason-lspconfig").setup_handlers({
+				function(server_name)
+					require("lspconfig")[server_name].setup({
+						capabilities = capabilities,
+					})
+				end,
 			})
 		end,
 	},
