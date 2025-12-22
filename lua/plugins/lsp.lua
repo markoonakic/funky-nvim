@@ -7,6 +7,10 @@ return {
 			"mason-org/mason-lspconfig.nvim",
 			"WhoIsSethDaniel/mason-tool-installer.nvim",
 		},
+		build = ":MasonUpdate",
+		keys = {
+			{ "<leader>ms", "<cmd>Mason<CR>", desc = "󰽤 Open Mason" },
+		},
 		config = function()
 			require("mason").setup({
 				ui = {
@@ -18,10 +22,8 @@ return {
 				},
 			})
 
-			-- mason-lspconfig: ONLY self-contained LSPs (always work)
 			require("mason-lspconfig").setup({
 				ensure_installed = {
-					-- LSPs: Always work anywhere (no external runtimes)
 					"lua_ls",
 					"luau_lsp",
 					"rust_analyzer",
@@ -30,23 +32,19 @@ return {
 					"ltex",
 					"yamlls",
 				},
-				automatic_installation = false, -- No spam/errors
+				automatic_installation = false,
 			})
 
-			-- mason-tool-installer: CONDITIONAL installations
 			local tools = {
-				-- Formatters: Self-contained or lightweight
 				"stylua",
 				"shfmt",
 			}
 
-			-- Prettier if npm available (for JS/TS/YAML)
 			if vim.fn.executable("npm") == 1 then
 				table.insert(tools, "prettierd")
 				table.insert(tools, "prettier")
 			end
 
-			-- Go-related tools if Go available (for debugging/AI)
 			if vim.fn.executable("go") == 1 then
 				table.insert(tools, "codelldb")
 				table.insert(tools, "lemonade")
@@ -57,12 +55,9 @@ return {
 				ensure_installed = tools,
 			})
 		end,
-		build = ":MasonUpdate",
-		keys = {
-			{ "<leader>ms", "<cmd>Mason<CR>", desc = "󰽤 Open Mason" },
-		},
 	},
 
+	-- LSP (new framework)
 	{
 		"neovim/nvim-lspconfig",
 		event = { "BufReadPre", "BufNewFile" },
@@ -126,7 +121,7 @@ return {
 
 			local cfg = vim.lsp.config
 
-			-- Always configure LSPs (they'll work when binaries exist)
+			-- Emmet
 			cfg("emmet_language_server", {
 				filetypes = {
 					"css",
@@ -151,6 +146,7 @@ return {
 				capabilities = capabilities,
 			})
 
+			-- Lua
 			cfg("lua_ls", {
 				settings = {
 					Lua = { hint = { enable = true } },
@@ -158,6 +154,7 @@ return {
 				capabilities = capabilities,
 			})
 
+			-- Clangd
 			cfg("clangd", {
 				settings = {
 					clangd = {
@@ -173,6 +170,7 @@ return {
 				capabilities = capabilities,
 			})
 
+			-- Go
 			cfg("gopls", {
 				settings = {
 					gopls = {
@@ -190,6 +188,7 @@ return {
 				capabilities = capabilities,
 			})
 
+			-- TS/JS
 			cfg("vtsls", {
 				settings = {
 					typescript = {
@@ -206,6 +205,7 @@ return {
 				capabilities = capabilities,
 			})
 
+			-- Markdown LSPs
 			cfg("marksman", {
 				filetypes = { "markdown" },
 				capabilities = capabilities,
@@ -226,13 +226,21 @@ return {
 				capabilities = capabilities,
 			})
 
-			-- Use mason-lspconfig to setup Mason-installed LSPs
-			require("mason-lspconfig").setup_handlers({
-				function(server_name)
-					require("lspconfig")[server_name].setup({
-						capabilities = capabilities,
-					})
-				end,
+			-- Enable all configured servers (new API)
+			vim.lsp.enable({
+				"lua_ls",
+				"luau_lsp",
+				"rust_analyzer",
+				"taplo",
+				"marksman",
+				"ltex",
+				"yamlls",
+				"html",
+				"cssls",
+				"clangd",
+				"gopls",
+				"vtsls",
+				"emmet_language_server",
 			})
 		end,
 	},
