@@ -61,21 +61,20 @@ return {
 		load_on_startup = true,
 
 		header = function()
-			-- Load frames once
-			if not _G.ascii_frames then
-				local ok, frames = pcall(dofile, vim.fn.expand("~/.config/nvim/lua/ascii_frames.lua"))
-				if ok and frames and #frames > 0 then
-					_G.ascii_frames = frames
-					_G.ascii_frame_idx = 1
+			-- Frames already loaded in init.lua
+			-- Just build cached header with gap
+			if not _G.ascii_header_with_gap then
+				if _G.ascii_frames and _G.ascii_frames[1] then
+					local header = {}
+					for _, line in ipairs(_G.ascii_frames[1]) do
+						table.insert(header, line)
+					end
+					table.insert(header, "") -- Add 1 empty line for gap
+					_G.ascii_header_with_gap = header
 				end
 			end
 
-			-- Return empty placeholder - animation will render the frames
-			local empty = {}
-			for i = 1, 22 do
-				table.insert(empty, "")
-			end
-			return empty
+			return _G.ascii_header_with_gap or {}
 		end,
 
 		buttons = {
@@ -99,6 +98,7 @@ return {
 				end,
 				hl = "NvDashPLuginStats",
 				no_gap = true,
+				content = "fit",
 			},
 
 			{ txt = "─", hl = "NvDashPLuginStats", no_gap = true, rep = true },

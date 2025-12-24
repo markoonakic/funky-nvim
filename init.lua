@@ -21,5 +21,13 @@ if vim.fn.isdirectory(cache) == 1 then
 	end
 end
 
+-- Preload ASCII frames for instant animation
+if not _G.ascii_frames then
+	local ok, frames = pcall(dofile, vim.fn.expand("~/.config/nvim/lua/nvdash/ascii_frames.lua"))
+	if ok and frames and #frames > 0 then
+		_G.ascii_frames = frames
+	end
+end
+
 -- Load ASCII dashboard animation
-require("ascii_animation")
+require("nvdash.animation")
